@@ -13,7 +13,7 @@ const questionCampaignSchema = new mongoose.Schema({
         type: String, required: true,
     },
 
-    termsCodition: {
+    termsCondition: {
         type: String, required: true,
     },
 
@@ -23,20 +23,20 @@ const questionCampaignSchema = new mongoose.Schema({
 
     duration: {
         type: Number,
-        required: true,
         min: 0
     },
 
 
     validFrom: {
-        type: Date,
-        required: true
+        type: Date
     },
     validTill: {
-        type: Date,
-        required: true
+        type: Date
     }
 
+});
 
 
-})
+const questionCampaign = mongoose.model('questionCampaign', questionCampaignSchema)
+
+module.exports = questionCampaign

@@ -15,6 +15,7 @@ let mongoWrapper = require("../config/mongo-wrapper");
 
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
+console.log(`server started from this port number ${port}`);
 (async () => {
   await mongoWrapper.connect();
 })()

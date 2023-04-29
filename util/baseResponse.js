@@ -31,6 +31,7 @@ module.exports = class responseHandler {
     }
 
     catch_error(err, status_code) {
+        console.log(err);
         let returnResponse = this.moduleResponsesError[err.message] == undefined ? { message: err.message } : this.moduleResponsesError[err.message];
         if (this.moduleResponsesError[err.message] == undefined) console.log(err);
         returnResponse.status = false;
