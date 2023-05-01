@@ -7,7 +7,9 @@ router.get('/get-basic-test-info', testController.getBasicQuestionCampaignInfo);
 
 router.post('/start-test', testController.testStart);
 
-router.put('/submit-test', testController.testSubmitted);
+router.post('/submit-single-answer', testController.submitSingleAnswer)
+
+router.post('/submit-test', testController.testSubmitted);
 
 // router.get('/view-time-access-setting', testController.viewTimeAccessSetting);
 

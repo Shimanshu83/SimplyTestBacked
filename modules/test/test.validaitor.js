@@ -1,4 +1,4 @@
-module.exports = class questionCampaignValidaitor {
+module.exports = class testValidaitor {
 
     constructor() { }
 
@@ -9,6 +9,15 @@ module.exports = class questionCampaignValidaitor {
             description: "required|between:3,30",
             termsCondition: "required|between:3,30",
             id: "required",
+        };
+    }
+
+    startTest() {
+        return {
+            questionCampaignId: "required|string",
+            firstName: "required|string",
+            lastName: "required|string",
+            email: "required|email"
         };
     }
 
