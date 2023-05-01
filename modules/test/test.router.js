@@ -9,7 +9,7 @@ router.post('/start-test', testController.testStart);
 
 router.post('/submit-single-answer', testController.submitSingleAnswer)
 
-router.post('/submit-test', testController.testSubmitted);
+router.post('/submit-test', testController.submitTest);
 
 // router.get('/view-time-access-setting', testController.viewTimeAccessSetting);
 

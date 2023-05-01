@@ -65,7 +65,7 @@ module.exports = class testService {
 
         let answerSubmittedArray = questionCampaignQuestionData.map(question => {
             return {
-                questionId: formData.questionCampaignId,
+                questionId: question._id,
                 resultTable: resultTableDataSaved._id
             };
         });
@@ -110,13 +110,29 @@ module.exports = class testService {
 
         // need to get the questionObject and compare if the answer selected is right or not 
 
-        let questionObject = questionModel.findById(answerObject.questionId);
+        let questionObject = await questionModel.findById(answerObject.questionId);
 
         if (!questionObject) {
             throw new Error('question_obj_not_found');
         }
 
+        let pointsObtained = 0;
 
+        if (this.isRightOptionSelected(questionObject, formData.optionSelectedArray)) {
+            pointsObtained = questionObject['_doc'].correctAnswerPoint;
+        }
+        else {
+            pointsObtained = questionObject['_doc'].incorrectAnswerPoint;
+        }
+
+        // update the answerSubmitted doc and sent the updated doc 
+
+        let updateSubmittedDoc = await answerSubmittedModel.findByIdAndUpdate(formData.answerId, {
+            "choseAnswer": formData.optionSelectedArray,
+            "pointsObtained": pointsObtained
+        }, { new: true });
+
+        return responseHandler.success("answer_updated_successfully", updateSubmittedDoc);
     }
 
     /**
@@ -126,11 +142,13 @@ module.exports = class testService {
      * Our objective is to calculate point on the basis of usersAnswerSelection and right answers .
      */
     isRightOptionSelected(qeustionObject, optionSelectedArray) {
+
         let rightAnswerArray = qeustionObject['options'].reduce(
             (rightAnswerArrayId, option) => {
                 if (option['selected'] === true) {
-                    rightAnswerArrayId.push(option['_id'])
+                    rightAnswerArrayId.push((option._id) + '')
                 }
+                return rightAnswerArrayId
             }, []
         );
 
@@ -142,6 +160,7 @@ module.exports = class testService {
         let isAnswerSelectedCorrect = true;
 
         for (let answerId of rightAnswerArray) {
+            console.log(answerId);
             if (!optionSelectedArray.includes(answerId)) {
                 isAnswerSelectedCorrect = false;
                 break
@@ -150,4 +169,15 @@ module.exports = class testService {
 
         return isAnswerSelectedCorrect;
     }
+
+
+    async submitTest(formData) { }
+    // first we will check if the result table exist or not 
+    // check if it's already not submitted 
+    // then we need to check if submission time is within attempted at  and attempted at + exam duration 
+    // if valid then we will save timeTaken submittedAt 
+    // then we will calculate the overall points and questionAttempted at. 
+
+
+
 }

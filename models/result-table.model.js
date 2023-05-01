@@ -6,7 +6,7 @@ const resultSchema = new mongoose.Schema({
     required: true,
     ref: 'QuestionCampaign'
   },
-  userName: {
+  email: {
     type: String,
     required: true
   },

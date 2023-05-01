@@ -94,8 +94,25 @@ module.exports = class testController {
         res.send(returnResponse);
     }
 
-    async testSubmitted(req, res) {
+    async submitTest(req, res) {
+        let returnResponse = {};
+        let formData = {
+            questionCampaignId: req.body.questionCampaignId,
+            resultTableId: req.body.resultTableId,
 
+        }
+        let validation = new Validator(formData, { answerId: 'required', 'optionSelectedArray.*': "required|string" });
+        if (validation.passes() && !validation.fails()) {
+            try {
+                returnResponse = await testService.submitTest(formData);
+            } catch (error) {
+                returnResponse = responseHandler.catch_error(error);
+            }
+        }
+        else {
+            returnResponse = responseHandler.failure("request_body_incorrect", validation.errors.errors);
+        }
+        res.send(returnResponse);
 
     }
 

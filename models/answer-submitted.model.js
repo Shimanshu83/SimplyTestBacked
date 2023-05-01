@@ -6,9 +6,17 @@ const answerSubmittedSchema = new mongoose.Schema({
         required: true,
         ref: 'Question'
     },
+
+
+    resultTable: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'ResultTable'
+    },
+
     choseAnswer: [
         {
-            type: Number
+            type: String
         }
     ],
     pointsObtained: {

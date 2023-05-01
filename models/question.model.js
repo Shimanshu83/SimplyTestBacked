@@ -13,6 +13,11 @@ const optionSchema = new mongoose.Schema({
 });
 
 const questionSchema = new mongoose.Schema({
+    questionCampaignId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'questionCampaign'
+    },
     questionText: {
         type: String,
         required: true
