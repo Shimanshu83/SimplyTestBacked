@@ -4,6 +4,7 @@ const questionCampaignModel = require('../../models/question-campaign.model');
 const questionModel = require('../../models/question.model');
 const resultModel = require('../../models/result-table.model');
 const answerSubmittedModel = require('../../models/answer-submitted.model');
+// const resultTableModel = require('../../models/result-table.model');
 
 
 module.exports = class testService {
@@ -171,13 +172,105 @@ module.exports = class testService {
     }
 
 
-    async submitTest(formData) { }
-    // first we will check if the result table exist or not 
-    // check if it's already not submitted 
-    // then we need to check if submission time is within attempted at  and attempted at + exam duration 
-    // if valid then we will save timeTaken submittedAt 
-    // then we will calculate the overall points and questionAttempted at. 
+    async submitTest(formData) {
+        // first we will check if the result table exist or not 
+        // check if it's already not submitted 
+        // then we need to check if submission time is within attempted at  and attempted at + exam duration 
+        // if valid then we will save timeTaken submittedAt 
+        // then we will calculate the overall points and questionAttempted at. 
 
+        let resultTableData = await resultModel.findById(formData.resultTableId);
+        let questionCampaignData = await questionCampaignModel.findById(formData.questionCampaignId);
+
+
+        if (!resultTableData) {
+            return responseHandler.failure("no_result_table_record_found");
+        }
+
+        // how much time does it take to complete the test 
+        // this value will be in minutes and an Integer 
+        let timeTaken = 0;
+
+        if (resultTableData.submitted === false) {
+            let currentTime = Date.now();
+            let attemptedAt = new Date(resultTableData.attemptedAt).getTime();
+            // adding one more minute considering network delays 
+            if ((attemptedAt + (questionCampaignData.duration * 60000) + 60000) < currentTime) {
+                return responseHandler.failure("test_time_passed");
+            }
+            else {
+
+                timeTaken = Math.floor(((currentTime - attemptedAt) / 60000));
+
+            }
+        }
+        else {
+            return responseHandler.failure("test_already_submitted");
+        }
+
+        // get all the answers from the answers table with same resulTableId  
+        // and then calculate all other stats 
+
+        let allAnswersDataArray = await answerSubmittedModel.find({ resultTable: formData.resultTableId });
+
+        // write a function which 
+
+        let answerStatsData = this.answerStatsMethod(allAnswersDataArray);
+
+        //last submition to the result table 
+
+        let resultTableSubmission = await resultModel.findByIdAndUpdate(formData.resultTableId,
+            { ...answerStatsData, timeTaken: timeTaken, submitted: true, submittedAt: new Date() },
+            { new: true }
+        );
+
+        return responseHandler.success("test_submitted_successfully", resultTableSubmission);
+    }
+
+
+    /**
+     * 
+     * @param {*} allAnswerDataArray 
+     * 
+     * returns an object with the definations as below 
+     * {
+     *  totalScore : 12 , 
+     *  noQuestionAttempted : 12 , 
+     *  noRightAnswerChoosed :  , 
+     *  noWrongAnswerChoosed : , 
+     *  noQuestionSkipped : , 
+     * 
+     * }
+     */
+    answerStatsMethod(allAnswerDataArray) {
+        let answerStats = {
+            totalScore: 0,
+            noQuestionAttempted: 0,
+            noRightAnswerChoosed: 0,
+            noWrongAnswerChoosed: 0,
+            noQuestionSkipped: 0,
+        }
+
+        for (let answer of allAnswerDataArray) {
+
+            if (answer.choseAnswer !== undefined && answer.choseAnswer !== null && answer.choseAnswer.length > 0) {
+                answerStats.totalScore += answer.pointsObtained;
+                answerStats.noQuestionAttempted += 1;
+                if (answer.pointsObtained > 0) {
+                    answerStats.noRightAnswerChoosed += 1;
+                }
+                else {
+                    answerStats.noWrongAnswerChoosed += 1;
+                }
+            }
+            else {
+                answerStats.noQuestionSkipped += 1;
+            }
+        }
+
+        return answerStats;
+
+    }
 
 
 }

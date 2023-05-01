@@ -101,7 +101,7 @@ module.exports = class testController {
             resultTableId: req.body.resultTableId,
 
         }
-        let validation = new Validator(formData, { answerId: 'required', 'optionSelectedArray.*': "required|string" });
+        let validation = new Validator(formData, { questionCampaignId: 'required', 'resultTableId': "required" });
         if (validation.passes() && !validation.fails()) {
             try {
                 returnResponse = await testService.submitTest(formData);

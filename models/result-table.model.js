@@ -34,6 +34,18 @@ const resultSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  noRightAnswerChoosed: {
+    type: Number,
+    default: 0
+  },
+  noWrongAnswerChoosed: {
+    type: Number,
+    default: 0
+  },
+  noQuestionSkipped: {
+    type: Number,
+    default: 0
+  },
   submitted: {
     type: Boolean,
     default: false
