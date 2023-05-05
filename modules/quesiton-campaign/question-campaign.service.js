@@ -42,7 +42,6 @@ module.exports = class questionCampaignService {
 
 
     async editBasicSetting(formData) {
-
         let updatedQuestionCampaign = await questionCampaignModel.findByIdAndUpdate(
             formData.id, { ...formData }, { new: true }
         );
@@ -85,8 +84,15 @@ module.exports = class questionCampaignService {
         let questionCampaignData = await questionCampaignModel.findById(questionCampaignId);
         let questionCampaignQuestionData = await questionModel.find({ questionCampaignId: questionCampaignId });
 
-
-
         return responseHandler.success("question_campaign_data", { ...questionCampaignData['_doc'], questions: questionCampaignQuestionData });
+    }
+
+    async getAllQuestionCampaign() {
+
+        // need to return all question 
+
+        let allQuestionCampaignData = await questionCampaignModel.find();
+
+        return responseHandler.success("all_question_campaign_found", allQuestionCampaignData);
     }
 }

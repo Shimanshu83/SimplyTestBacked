@@ -168,6 +168,19 @@ module.exports = class QuestionCampaign {
         res.send(returnResponse);
     }
 
+    async getAllQuestionCampaign(req, res) {
+        let returnResponse = {};
+
+        try {
+            returnResponse = await questionCampaignService.getAllQuestionCampaign();
+        } catch (error) {
+            returnResponse = responseHandler.catch_error(error);
+        }
+
+        res.send(returnResponse);
+
+    }
+
 
 
 

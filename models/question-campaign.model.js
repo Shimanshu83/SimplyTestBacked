@@ -34,7 +34,7 @@ const questionCampaignSchema = new mongoose.Schema({
         type: Date
     }
 
-});
+}, { timestamps: true });
 
 
 const questionCampaign = mongoose.model('questionCampaign', questionCampaignSchema)

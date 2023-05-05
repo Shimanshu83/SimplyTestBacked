@@ -15,6 +15,8 @@ router.put('/update-question', questionCampaignController.editQuestion);
 
 router.post('/add-time-access-setting', questionCampaignController.addTimeAccessSetting);
 
+router.get('/get-all-question-campaign', questionCampaignController.getAllQuestionCampaign);
+
 
 
 // router.get('/view-time-access-setting', questionCampaignController.viewTimeAccessSetting);
